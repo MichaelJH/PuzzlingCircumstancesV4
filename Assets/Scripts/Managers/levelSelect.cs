@@ -14,14 +14,24 @@ public class levelSelect : MonoBehaviour {
 	
 
     public void Selected(int sceneNum) {
+        //Change previously selected to black
+        if (selectedScene != 0) {
+            var curLevel = GameObject.Find("Level" + selectedScene);
+            curLevel.GetComponentInChildren<UnityEngine.UI.Text>().color = new Color32(50,50,50,250);
+        }
+
         selectedScene = sceneNum;
         //Sets the image on the right
         string sceneName = "Room" + sceneNum;
         defaultImage.sprite = Resources.Load<Sprite>(sceneName);
 
         //Set label
-        var label = GameObject.Find("Label").GetComponent<UnityEngine.UI.Text>();
-        label.text = "Room " + sceneNum;
+        //var label = GameObject.Find("Label").GetComponent<UnityEngine.UI.Text>();
+        //label.text = "Room " + sceneNum;
+
+        //Trying to change font
+        var newLevel = GameObject.Find("Level" + sceneNum);
+        newLevel.GetComponentInChildren<UnityEngine.UI.Text>().color = Color.white;
     }
 
 
