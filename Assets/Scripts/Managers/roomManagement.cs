@@ -36,10 +36,14 @@ public class roomManagement : MonoBehaviour {
         int _playerMask = LayerMask.NameToLayer("Player");
         int _laserMask = LayerMask.NameToLayer("Deadly");
         int _lightMask = LayerMask.NameToLayer("PortalLight");
+        int _doorMask = LayerMask.NameToLayer("Door");
+        int _entranceMask = LayerMask.NameToLayer("Entrance");
         // ignore collisions between boxes and players and lasers
         Physics2D.IgnoreLayerCollision(_boxMask, _playerMask);
         Physics2D.IgnoreLayerCollision(_boxMask, _laserMask);
         Physics2D.IgnoreLayerCollision(_boxMask, _lightMask);
+        Physics2D.IgnoreLayerCollision(_boxMask, _doorMask);
+        Physics2D.IgnoreLayerCollision(_boxMask, _entranceMask);
 
     }
 
