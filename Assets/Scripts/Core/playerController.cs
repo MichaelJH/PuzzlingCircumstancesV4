@@ -81,8 +81,8 @@ public class playerController : MonoBehaviour {
             boxPos += gravity * -75;
             carriedBox.transform.position = boxPos;
         }
-
-        // change gravity (will move to an input controller)
+        /*
+        // change gravity (will move to an input controller) 
         if (Input.GetKeyDown(KeyCode.I)) {
             gravityScript.SetGravityOrientation(gravityHandler.GravityOrientation.Up);
         } else if (Input.GetKeyDown(KeyCode.K)) {
@@ -91,7 +91,7 @@ public class playerController : MonoBehaviour {
             gravityScript.SetGravityOrientation(gravityHandler.GravityOrientation.Right);
         } else if (Input.GetKeyDown(KeyCode.J)) {
             gravityScript.SetGravityOrientation(gravityHandler.GravityOrientation.Left);
-        }
+        }*/
 
         if (collisionScript.onGround && Input.GetButtonDown("Jump") && move) {
             _jump = true;

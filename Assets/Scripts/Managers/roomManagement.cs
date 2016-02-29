@@ -52,10 +52,10 @@ public class roomManagement : MonoBehaviour {
             RestartLevel();
         }
         if (Input.GetKeyDown(KeyCode.Alpha0)) {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
         if (Input.GetKeyDown(KeyCode.Alpha9)) {
-            SceneManager.LoadScene(13);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
         }
         //if (Input.GetKeyDown(KeyCode.Escape)) {
         //    Application.Quit();
