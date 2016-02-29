@@ -57,9 +57,9 @@ public class roomManagement : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Alpha9)) {
             SceneManager.LoadScene(13);
         }
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            Application.Quit();
-        }
+        //if (Input.GetKeyDown(KeyCode.Escape)) {
+        //    Application.Quit();
+        //}
     }
 
     void OnGUI() {

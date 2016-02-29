@@ -41,6 +41,7 @@ public class pauseScript : MonoBehaviour {
         Time.timeScale = 1;
         pause = false;
         SceneManager.LoadScene("endGame");
+        Application.Quit();
     }
 
     public void SelectLevel() {
