@@ -81,10 +81,14 @@ public class doorScript : MonoBehaviour {
 
             playerObject.transform.position = newPos;
 
-            StartCoroutine(TransitionRoom());
+            TransitionRoomCall();
         }
 	
 	}
+
+    public void TransitionRoomCall(int next = 1) {
+        StartCoroutine(TransitionRoom(next));
+    }
 
     public void RaiseGate() {
         if (!locked) {
@@ -149,7 +153,7 @@ public class doorScript : MonoBehaviour {
         }
     }
 
-    IEnumerator TransitionRoom() {
+    IEnumerator TransitionRoom(int next = 1) {
         // set z position of gate to cover player
         Vector3 newGatePos = gateTrans.position;
         newGatePos.z = -0.1f;
@@ -170,7 +174,7 @@ public class doorScript : MonoBehaviour {
         yield return new WaitForSeconds(1 / fadeSpeed);
         // transition to next room
         int currentScene = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentScene + 1);
+        SceneManager.LoadScene(currentScene + next);
     }
 
     IEnumerator GateTimer(float duration) {

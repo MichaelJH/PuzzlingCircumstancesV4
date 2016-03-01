@@ -78,6 +78,8 @@ public class roomManagement : MonoBehaviour {
     void OnLevelWasLoaded() {
         alpha = 1;
         BeginFade(-1);
+        var uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        uiManager.restarting = false;
     }
 
     public float BeginFade(int direction) {

@@ -11,12 +11,12 @@ public class UIManager : MonoBehaviour {
     public GameObject pausePrefab;
     public Canvas canvasPrefab;
     public GameObject eventSystemPrefab;
+    public bool restarting;
 
     void Start() {
         Time.timeScale = 1;
         isLevel = false;
-
-        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("sceneSelection") && (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("listSceneSelection"))) {
+        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("sceneSelection")) {
             //Not the scene selection 
             isLevel = true;
             //Instantiate objects
@@ -28,7 +28,7 @@ public class UIManager : MonoBehaviour {
             //Set canvas rendering to be in terms of main camera
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = camera;
-            canvas.planeDistance = 5;
+            canvas.planeDistance = 4;
 
             //set the pause panel to be a child of the canvas
             pauseMenu.transform.SetParent(canvas.transform, false);
@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape) && isLevel) {
+        if (Input.GetKeyDown(KeyCode.Escape) && isLevel && !restarting) {
             pauseMenu.GetComponent<pauseScript>().pause = true;
             pauseMenu.SetActive(true);
         }
