@@ -64,8 +64,11 @@ public class pauseScript : MonoBehaviour {
     public void SelectLevel() {
         Time.timeScale = 1;
         pause = false;
-        var trackerScript = GameObject.Find("Tracker").GetComponent<tracker>();
-        trackerScript.lastScene = SceneManager.GetActiveScene().buildIndex;
+        var tracker = GameObject.Find("Tracker");
+        if (tracker != null) {
+            var trackerScript = tracker.GetComponent<tracker>();
+            trackerScript.lastScene = SceneManager.GetActiveScene().buildIndex;
+        }
         SceneManager.LoadScene("listSceneSelection");
     }
 }
