@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class pauseScript : MonoBehaviour {
     public bool pause;
-    public int currScene;
     private GameObject player;
     private GameObject selectCanvas;
 
@@ -13,7 +12,6 @@ public class pauseScript : MonoBehaviour {
         gameObject.SetActive(false);
         player = GameObject.Find("Player");
         pause = false;
-        currScene = 0;
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("listSceneSelection")) {
             selectCanvas = GameObject.Find("SceneSelectCanvas");
         }
