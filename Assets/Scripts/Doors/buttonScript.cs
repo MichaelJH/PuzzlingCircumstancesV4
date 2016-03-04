@@ -5,12 +5,17 @@ public class buttonScript: MonoBehaviour {
     public float buttonDuration;
     private float buttonPressDistance;
     private float startTime;
+    private float timeRemaining;
     private Vector3 initialPosition;
-    private bool buttonPressed;
+    
     private GameObject doorObject;
     public GameObject buttonLightPrefab;
     private GameObject buttonLight;
     private GameObject player;
+    private TextMesh timerGUI;
+
+    private bool timerRunning = false;
+    private bool buttonPressed = false;
 
     // This is the coroutine used for timing the button
     private IEnumerator timer;
@@ -19,7 +24,6 @@ public class buttonScript: MonoBehaviour {
 	void Awake () {
         initialPosition = transform.position;
         buttonPressDistance = .275f;
-        buttonPressed = false;
         doorObject = GameObject.Find("Door");
         buttonLight = GameObject.Instantiate(buttonLightPrefab);
         buttonLight.transform.position = transform.position;
@@ -27,6 +31,9 @@ public class buttonScript: MonoBehaviour {
         if (doorObject == null)
             Debug.Log("No Door found by button."); // keep this debug line for error checking
         player = GameObject.Find("Player");
+
+        timerGUI = GameObject.Find("Timer").GetComponent<TextMesh>();
+        timeRemaining = 0;
     }
 	
     void Update() {
@@ -34,6 +41,15 @@ public class buttonScript: MonoBehaviour {
             ButtonPushed();
         } else if (player.GetComponent<playerCollisions>().exitedButton) {
             JumpedOffButton();
+        }
+
+        if (timerRunning) {
+            timeRemaining -= Time.deltaTime;
+            if (timeRemaining <= 0) {
+                timeRemaining = 0;
+                timerRunning = false;
+            }
+            timerGUI.text = timeRemaining.ToString("F2");
         }
     }
 
@@ -88,6 +104,10 @@ public class buttonScript: MonoBehaviour {
 
         buttonPressed = true;
         player.GetComponent<playerCollisions>().enteredButton = false;
+
+        timeRemaining = buttonDuration;
+        timerGUI.text = timeRemaining.ToString("F2");
+        timerRunning = false;
     }
 
     void JumpedOffButton() {
@@ -96,6 +116,7 @@ public class buttonScript: MonoBehaviour {
         timer = ButtonTimer(buttonDuration);
         StartCoroutine(timer);
         buttonPressed = false;
+        timerRunning = true;
         player.GetComponent<playerCollisions>().exitedButton = false;
     }
 
@@ -113,6 +134,9 @@ public class buttonScript: MonoBehaviour {
     }
 
     IEnumerator ButtonTimer(float duration) {
+        if (duration == 0) {
+            duration = 0.1f;
+        }
         yield return new WaitForSeconds(duration);
         if (!buttonPressed)
             TimeUp();
