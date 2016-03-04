@@ -90,7 +90,7 @@ public class buttonScript: MonoBehaviour {
         var doorScript = doorObject.GetComponent<doorScript>();
         if (doorScript.locked) {
             doorScript.locked = false;
-            doorScript.RaiseGate();
+            doorScript.ChangeLight("green");
         }
         
 
