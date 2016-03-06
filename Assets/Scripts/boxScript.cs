@@ -27,55 +27,64 @@ public class boxScript : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D coll) {
         if (coll.gameObject.tag == "Portal") {
-            var portalScript = player.GetComponent<PortalScript>();
-            float offset = 1.5f;
-            bool teleport = false;
-            PortalScript.WallOrientation orientation = PortalScript.WallOrientation.Left;
-            Vector2 newPos = Vector2.zero;
-            Vector2 newVeloc = Vector2.zero;
-
-            if (coll.gameObject == portalScript.Portal1) {
-                if (portalScript.Portal2.activeSelf) {
-                    teleport = true;
-                    newPos = portalScript.PPos.p2;
-                    orientation = portalScript.PPos.p2Or;
-                }
-            }
-            else {
-                if (portalScript.Portal2.activeSelf) {
-                    teleport = true;
-                    newPos = portalScript.PPos.p1;
-                    orientation = portalScript.PPos.p1Or;
-                }
-            }
-
-            if (teleport) {
-                float speed = rb2d.velocity.magnitude;
-                if (speed < .3f)
-                    speed = .3f;
-
-                if (orientation == PortalScript.WallOrientation.Left) {
-                    newPos.x += offset;
-                    newVeloc = new Vector2(speed, 0);
-                } else if (orientation == PortalScript.WallOrientation.Right) {
-                    newPos.x -= offset;
-                    newVeloc = new Vector2(-speed, 0);
-                } else if (orientation == PortalScript.WallOrientation.Ceiling) {
-                    newPos.y -= offset;
-                    newVeloc = new Vector2(0, -speed);
-                } else {
-                    newPos.y += offset;
-                    newVeloc = new Vector2(0, speed);
-                }
-
-                rb2d.velocity = newVeloc;
-                transform.position = newPos;
-            }
+            CollidedWithPortal(coll);
         } else if (coll.gameObject.tag == "Barrier") {
             if (!fading) {
                 fading = true;
                 StartCoroutine(FadeAndSpawn());
             }
+        }
+    }
+
+    void OnCollisionStay2D(Collision2D coll) {
+        if (coll.gameObject.tag == "Portal") {
+            CollidedWithPortal(coll);
+        }
+    }
+
+    private void CollidedWithPortal(Collision2D coll) {
+        var portalScript = player.GetComponent<PortalScript>();
+        float offset = 1.5f;
+        bool teleport = false;
+        PortalScript.WallOrientation orientation = PortalScript.WallOrientation.Left;
+        Vector2 newPos = Vector2.zero;
+        Vector2 newVeloc = Vector2.zero;
+
+        if (coll.gameObject == portalScript.Portal1) {
+            if (portalScript.Portal2.activeSelf) {
+                teleport = true;
+                newPos = portalScript.PPos.p2;
+                orientation = portalScript.PPos.p2Or;
+            }
+        } else {
+            if (portalScript.Portal2.activeSelf) {
+                teleport = true;
+                newPos = portalScript.PPos.p1;
+                orientation = portalScript.PPos.p1Or;
+            }
+        }
+
+        if (teleport) {
+            float speed = rb2d.velocity.magnitude;
+            if (speed < .3f)
+                speed = .3f;
+
+            if (orientation == PortalScript.WallOrientation.Left) {
+                newPos.x += offset;
+                newVeloc = new Vector2(speed, 0);
+            } else if (orientation == PortalScript.WallOrientation.Right) {
+                newPos.x -= offset;
+                newVeloc = new Vector2(-speed, 0);
+            } else if (orientation == PortalScript.WallOrientation.Ceiling) {
+                newPos.y -= offset;
+                newVeloc = new Vector2(0, -speed);
+            } else {
+                newPos.y += offset;
+                newVeloc = new Vector2(0, speed);
+            }
+
+            rb2d.velocity = newVeloc;
+            transform.position = newPos;
         }
     }
 
