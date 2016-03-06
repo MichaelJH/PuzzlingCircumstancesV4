@@ -68,7 +68,7 @@ public class PortalScript : MonoBehaviour {
 
                 bool makePortal = true;
                 Vector2 consol = PortalPositionConsolidation(ref makePortal, hit);
-                Vector3 portalPos = new Vector3(consol.x, consol.y, 1);
+                Vector3 portalPos = new Vector3(consol.x, consol.y, 0);
 
                 if (Input.GetButtonDown("Fire1") && makePortal) //If right mouse click
                 {
@@ -76,14 +76,14 @@ public class PortalScript : MonoBehaviour {
                     Portal1.transform.rotation = rotation;
                     Portal1.transform.position = portalPos - (Portal1.transform.right * .2f);
                         
-                    PPos.p1 = portalPos;
+                    PPos.p1 = Portal1.transform.position;
                     PPos.p1Or = shotOr;
                 } else if (Input.GetButtonDown("Fire2") && makePortal) //if left mouse click
                   {
                     Portal2.SetActive(true);
                     Portal2.transform.rotation = rotation;
                     Portal2.transform.position = portalPos - (Portal2.transform.right * .2f);
-                    PPos.p2 = portalPos;
+                    PPos.p2 = Portal2.transform.position;
                     PPos.p2Or = shotOr;
                 }
             }
