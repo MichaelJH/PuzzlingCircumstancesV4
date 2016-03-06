@@ -57,7 +57,7 @@ public class boxScript : MonoBehaviour {
                 orientation = portalScript.PPos.p2Or;
             }
         } else {
-            if (portalScript.Portal2.activeSelf) {
+            if (portalScript.Portal1.activeSelf) {
                 teleport = true;
                 newPos = portalScript.PPos.p1;
                 orientation = portalScript.PPos.p1Or;
