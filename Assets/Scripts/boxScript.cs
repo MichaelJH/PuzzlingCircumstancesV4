@@ -66,8 +66,9 @@ public class boxScript : MonoBehaviour {
 
         if (teleport) {
             float speed = rb2d.velocity.magnitude;
-            if (speed < .3f)
-                speed = .3f;
+            speed -= 1f;
+            if (speed < 15f)
+                speed = 15f;
 
             if (orientation == PortalScript.WallOrientation.Left) {
                 newPos.x += offset;
