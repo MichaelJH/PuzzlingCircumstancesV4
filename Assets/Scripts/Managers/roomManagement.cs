@@ -89,6 +89,8 @@ public class roomManagement : MonoBehaviour {
 
     public void RestartLevel() {
         if (blurSequence == null) {
+            var uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+            uiManager.restarting = true;
             blurSequence = blurTransition();
             var playerScript = GameObject.Find("Player").GetComponent<playerController>();
             playerScript.move = false;
