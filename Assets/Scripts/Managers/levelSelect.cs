@@ -1,18 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class levelSelect : MonoBehaviour {
     private int selectedScene; //Keep track of which scene is currently selected
     private bool animate;
     private GameObject door;
     private int scenePaused;
-    private UnityEngine.UI.Image defaultImage;
+    private Image defaultImage;
     private int numScenes;
+
+    private Color selectedColor;
+
+    //For scrolling
+    public ScrollRect scrollRect;
+    public RectTransform contentPanel;
+    private Vector2 origin;
+    private int quadrant;
+
 
     // Use this for initialization
     void Start () {
-        defaultImage = GameObject.Find("Image").GetComponent<UnityEngine.UI.Image>();
+        defaultImage = GameObject.Find("Image").GetComponent<Image>();
         door = GameObject.Find("Door");
         var tracker = GameObject.Find("Tracker").GetComponent<tracker>();
         scenePaused = tracker.lastScene;
@@ -21,6 +31,7 @@ public class levelSelect : MonoBehaviour {
             selectedScene = 1;
             SelectScene();
         }
+        origin = contentPanel.anchoredPosition;
     }
 
     void Update () {
@@ -82,24 +93,77 @@ public class levelSelect : MonoBehaviour {
     private void SelectScene() {
         var level = GameObject.Find("Level" + selectedScene);
         string sceneName = "Room" + selectedScene;
-
+        
         if (level != null) {
-            level.GetComponentInChildren<UnityEngine.UI.Text>().color = Color.white;
+            selectedColor = level.GetComponentInChildren<Text>().color;
+            level.GetComponentInChildren<Text>().color = Color.white;
             defaultImage.sprite = Resources.Load<Sprite>(sceneName);
         }
+
+        SnapTo(level.GetComponent<RectTransform>());
     }
 
     private void UnSelectScene() {
         if (selectedScene != 0) {
             var level = GameObject.Find("Level" + selectedScene);
-            level.GetComponentInChildren<UnityEngine.UI.Text>().color = new Color32(50, 50, 50, 250);
+            level.GetComponentInChildren<Text>().color = selectedColor;
         }
         if (scenePaused != 0) {
             var lastLevel = GameObject.Find("Level" + scenePaused);
-            lastLevel.GetComponentInChildren<UnityEngine.UI.Text>().color = new Color32(50, 50, 50, 250);
+            lastLevel.GetComponentInChildren<Text>().color = selectedColor;
             scenePaused = 0;
         }
     }
+
+    //Heavily modified from user maksymiuk on StackOverflow 
+    //at http://stackoverflow.com/questions/30766020/how-to-scroll-to-a-specific-element-in-scrollrect-with-unity-ui
+    public void SnapTo(RectTransform target) {
+        float offset = 50f;
+        Vector2 sizeOfRect = scrollRect.GetComponent<RectTransform>().sizeDelta;
+        Vector2 sizeOfContent = contentPanel.GetComponent<RectTransform>().sizeDelta;
+        float halfView = sizeOfRect.y / 2.0f;
+        float fourth = sizeOfContent.y / 4;
+        Canvas.ForceUpdateCanvases();
+
+        Vector2 move = (Vector2)scrollRect.transform.InverseTransformPoint(contentPanel.position)
+                            - (Vector2)scrollRect.transform.InverseTransformPoint(target.position);
+
+
+        // Debug.Log(move.y)
+
+        Vector2 newPos = new Vector2(0, 0);
+        if (move.y < halfView) {
+            newPos = origin;
+        } else if (move.y < sizeOfRect.y) {
+            newPos = new Vector2(contentPanel.anchoredPosition.x, origin.y + halfView - offset);
+        } else if (move.y < (sizeOfRect.y + halfView)) {
+            //    Debug.Log("Third else " + (origin.y+2*halfView - offset));
+            newPos = new Vector2(contentPanel.anchoredPosition.x, origin.y + 2 * fourth - offset*2);
+        }
+            //} else if ((move.y < sizeOfRect.y*2)) {
+            //    Debug.Log("moving here!");
+            //    float newY = origin.y + sizeOfContent.y - halfView;
+            //    Debug.Log("New y" + newY);
+            //    newPos = new Vector2(contentPanel.anchoredPosition.x, newY );
+            //}
+            Debug.Log("moving to " + newPos);
+            contentPanel.anchoredPosition = newPos;
+
+
+            //        Debug.Log("scroll: " + scroll);
+            //        Debug.Log("Amount to move " + move.y);
+            //        if ((Mathf.Abs(move.y) > scroll)) {
+            //// Debug.Log("Scrolling " + halfScroll);
+            //            Canvas.ForceUpdateCanvases();
+            //            scroll += 200f;
+            //            Vector2 newPos = new Vector2(contentPanel.anchoredPosition.x, move.y + offset);
+            //            contentPanel.anchoredPosition = newPos;
+            //        }
+
+            //        if (scroll > sizeOfRect.y) {
+            //            scroll = 200f;
+            //        }
+        }
 
     int MyMod(int a, int b) {
         int rem = a % b;
