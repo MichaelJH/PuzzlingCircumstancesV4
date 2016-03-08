@@ -9,7 +9,7 @@ public class levelSelect : MonoBehaviour {
     private GameObject door;
     private int scenePaused;
     private Image defaultImage;
-    private int numScenes;
+    public int numScenes;
 
     private Color selectedColor;
 
@@ -26,7 +26,6 @@ public class levelSelect : MonoBehaviour {
         door = GameObject.Find("Door");
         var tracker = GameObject.Find("Tracker").GetComponent<tracker>();
         scenePaused = tracker.lastScene;
-        numScenes = 18;
         if (scenePaused == 0) {
             selectedScene = 1;
             SelectScene();
