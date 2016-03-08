@@ -33,8 +33,10 @@ public class pauseScript : MonoBehaviour {
         gameObject.SetActive(false);
         Time.timeScale = 1;
         pause = false;
-        player.GetComponent<playerController>().move = true;
-        player.GetComponent<PortalScript>().paused = false;
+        if (SceneManager.GetActiveScene().buildIndex != 0) {
+            player.GetComponent<playerController>().move = true;
+            player.GetComponent<PortalScript>().paused = false;
+        }
 
         //select level case
         if (selectCanvas != null) {
