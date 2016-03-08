@@ -261,6 +261,7 @@ public class playerController : MonoBehaviour {
 
         if (whichPortal == 1) {
             if (portalScript.Portal2.activeSelf) {
+                _framesJumped = 0;
                 Vector2 newPos = portalScript.PPos.p2;
                 PortalScript.WallOrientation orientation = portalScript.PPos.p2Or;
                 if (orientation == PortalScript.WallOrientation.Left)
@@ -277,6 +278,7 @@ public class playerController : MonoBehaviour {
         }
         else {
             if (portalScript.Portal1.activeSelf) {
+                _framesJumped = 0;
                 Vector2 newPos = portalScript.PPos.p1;
                 PortalScript.WallOrientation orientation = portalScript.PPos.p1Or;
                 if (orientation == PortalScript.WallOrientation.Left)
