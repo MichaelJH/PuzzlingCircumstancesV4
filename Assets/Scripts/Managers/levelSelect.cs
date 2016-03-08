@@ -17,8 +17,7 @@ public class levelSelect : MonoBehaviour {
     public ScrollRect scrollRect;
     public RectTransform contentPanel;
     private Vector2 origin;
-    private int quadrant;
-
+    private int section;
 
     // Use this for initialization
     void Start () {
@@ -100,71 +99,86 @@ public class levelSelect : MonoBehaviour {
         }
 
         SnapTo(level.GetComponent<RectTransform>());
+        scenePaused = 0;
     }
 
     private void UnSelectScene() {
-        if (selectedScene != 0) {
-            var level = GameObject.Find("Level" + selectedScene);
-            level.GetComponentInChildren<Text>().color = selectedColor;
-        }
+        GameObject level;
+        level = GameObject.Find("Level" + selectedScene);
+
         if (scenePaused != 0) {
-            var lastLevel = GameObject.Find("Level" + scenePaused);
-            lastLevel.GetComponentInChildren<Text>().color = selectedColor;
-            scenePaused = 0;
+            level = GameObject.Find("Level" + scenePaused);
         }
+
+        level.GetComponentInChildren<Text>().color = selectedColor;
+
+        //Scroll focus
+        RectTransform target = level.GetComponent<RectTransform>();
+        Vector2 move = (Vector2)scrollRect.transform.InverseTransformPoint(contentPanel.position)
+                            - (Vector2)scrollRect.transform.InverseTransformPoint(target.position);
+
+        section = detectSection(move); //last button's section
     }
 
     //Heavily modified from user maksymiuk on StackOverflow 
     //at http://stackoverflow.com/questions/30766020/how-to-scroll-to-a-specific-element-in-scrollrect-with-unity-ui
-    public void SnapTo(RectTransform target) {
-        float offset = 50f;
+    private void SnapTo(RectTransform target) {
         Vector2 sizeOfRect = scrollRect.GetComponent<RectTransform>().sizeDelta;
         Vector2 sizeOfContent = contentPanel.GetComponent<RectTransform>().sizeDelta;
-        float halfView = sizeOfRect.y / 2.0f;
-        float fourth = sizeOfContent.y / 4;
+        float offset = sizeOfRect.y / 2.5f;
+
         Canvas.ForceUpdateCanvases();
 
         Vector2 move = (Vector2)scrollRect.transform.InverseTransformPoint(contentPanel.position)
                             - (Vector2)scrollRect.transform.InverseTransformPoint(target.position);
 
-
-        // Debug.Log(move.y)
+        
+        int newSection = detectSection(move);
 
         Vector2 newPos = new Vector2(0, 0);
-        if (move.y < halfView) {
-            newPos = origin;
-        } else if (move.y < sizeOfRect.y) {
-            newPos = new Vector2(contentPanel.anchoredPosition.x, origin.y + halfView - offset);
-        } else if (move.y < (sizeOfRect.y + halfView)) {
-            //    Debug.Log("Third else " + (origin.y+2*halfView - offset));
-            newPos = new Vector2(contentPanel.anchoredPosition.x, origin.y + 2 * fourth - offset*2);
-        }
-            //} else if ((move.y < sizeOfRect.y*2)) {
-            //    Debug.Log("moving here!");
-            //    float newY = origin.y + sizeOfContent.y - halfView;
-            //    Debug.Log("New y" + newY);
-            //    newPos = new Vector2(contentPanel.anchoredPosition.x, newY );
-            //}
-            Debug.Log("moving to " + newPos);
+        if (newSection != section) { //Only update when buttons are in a new section
+            switch (newSection) {
+                case 1:
+                    newPos = origin;
+                    break;
+                case 2:
+                    newPos = new Vector2(contentPanel.anchoredPosition.x, origin.y + offset);
+                    break;
+                case 3:
+                    newPos = new Vector2(contentPanel.anchoredPosition.x, origin.y + 2 * offset);
+                    break;
+                case 4:
+                    newPos = new Vector2(contentPanel.anchoredPosition.x, origin.y + 3 * offset);
+                    break;
+            }
+
             contentPanel.anchoredPosition = newPos;
-
-
-            //        Debug.Log("scroll: " + scroll);
-            //        Debug.Log("Amount to move " + move.y);
-            //        if ((Mathf.Abs(move.y) > scroll)) {
-            //// Debug.Log("Scrolling " + halfScroll);
-            //            Canvas.ForceUpdateCanvases();
-            //            scroll += 200f;
-            //            Vector2 newPos = new Vector2(contentPanel.anchoredPosition.x, move.y + offset);
-            //            contentPanel.anchoredPosition = newPos;
-            //        }
-
-            //        if (scroll > sizeOfRect.y) {
-            //            scroll = 200f;
-            //        }
+            section = newSection;
+        }
+            
         }
 
-    int MyMod(int a, int b) {
+    private int detectSection(Vector2 move) {
+        Vector2 sizeOfRect = scrollRect.GetComponent<RectTransform>().sizeDelta;
+        Vector2 sizeOfContent = contentPanel.GetComponent<RectTransform>().sizeDelta;
+        float halfView = sizeOfRect.y / 2.0f;
+
+        int newSection = 0;
+
+        if (move.y < halfView) {
+            newSection = 1;
+        } else if (move.y < sizeOfRect.y) {
+            newSection = 2;
+        } else if (move.y < (sizeOfRect.y + halfView)) {
+            newSection = 3;
+        } else if ((move.y < sizeOfContent.y)) { //just go straight to the last portion
+            newSection = 4;
+        }
+
+        return newSection;
+    }
+
+    private int MyMod(int a, int b) {
         int rem = a % b;
         if (rem < 0) {
             rem = b + rem;
